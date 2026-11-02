@@ -52,15 +52,34 @@ def getSearchCriteria():
 
 #*************************************************
 # #Task-2: GET REQUEST
-# @app.route("/t2")
-# def t2():
-#     return render_template("t2.html")
+@app.route("/t2")
+def t2():
+    return render_template("t2.html")
 #*************************************************
 @app.route("/getSearchCriteria_adv")
 def getSearchCriteria_adv():
- #fill me in :
-#  return render_template("t2.html",images=encodedImageLinks)
-    pass
+    # get the user input from the form (GET request -> request.args)
+    searchTerm = request.args.get("search", "").strip()
+
+    # build the url for the NASA Image API
+    url = "https://images-api.nasa.gov/search?q=" + searchTerm + "&media_type=image"
+    response = requests.get(url)
+    data = response.json()
+
+    # the results are a list of items (each one is a dictionary)
+    items = data.get("collection", {}).get("items", [])
+
+    encodedImageLinks = []
+    for item in items:
+        # skip any item that has no image links
+        if "links" not in item:
+            continue
+        # first image href from the links key
+        singleImage = item["links"][0]["href"]
+        # url encode the spaces and add it to the list
+        encodedImageLinks.append(singleImage.replace(' ', '%20'))
+
+    return render_template("t2.html",images=encodedImageLinks)
 #*************************************************
 
 #run

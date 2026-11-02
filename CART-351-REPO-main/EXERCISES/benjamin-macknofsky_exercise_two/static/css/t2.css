@@ -1,0 +1,38 @@
+/* image grid for task 2 (page styles come from t1.css) */
+.gallery{
+    padding-top:30px;
+    border-top:2px solid rgb(70, 80, 120);
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+    gap:30px;
+    margin-top:20px;
+}
+
+/* each image is a small photo print */
+.grid img{
+    display:block;
+    width:100%;
+    aspect-ratio:1 / 1;
+    object-fit:cover;
+    padding:8px;
+    background-color:rgb(240, 234, 220);
+    box-shadow:0px 6px 18px rgba(0, 0, 0, 0.5);
+    transform:rotate(-1.5deg);
+    transition:transform 0.2s;
+}
+
+/* tilt every other print the other way so they look scattered */
+.grid a:nth-child(even) img{
+    transform:rotate(1.5deg);
+}
+
+.grid a:hover img{
+    transform:rotate(0deg) scale(1.04);
+}
+
+.no-images{
+    font-size:17px;
+}

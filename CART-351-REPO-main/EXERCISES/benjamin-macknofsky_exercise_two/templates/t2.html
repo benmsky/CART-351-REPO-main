@@ -1,0 +1,48 @@
+<!-- will be a child of base-->
+{% extends "base.html" %}
+
+{% block styles %}
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&display=swap" rel="stylesheet">
+    <!-- t1.css has the shared space page styles, t2.css has the image grid -->
+    <link rel="stylesheet" href="../static/css/t1.css">
+    <link rel="stylesheet" href="../static/css/t2.css">
+{% endblock %}
+
+{% block content %}
+<div class="space-page">
+
+    <!-- a little ringed planet drawn with css -->
+    <div class="planet"><div class="ring"></div></div>
+
+    <p class="kicker">Task 2</p>
+    <h3>NASA image gallery</h3>
+
+    <section class="search-box">
+        <!-- the form sends a GET request to /getSearchCriteria_adv -->
+        <form action="{{url_for('getSearchCriteria_adv')}}" method="GET">
+            <label for="search">NASA API SEARCH CRITERIA:</label>
+            <div class="search-bar">
+                <input type="text" id="search" name="search" placeholder="search for ..." required>
+                <input type="submit" value="submit search">
+            </div>
+        </form>
+    </section>
+
+    <!-- container for the list of images (could be 0, 1, 2 ... n) -->
+    {% if images is defined %}
+    <section class="gallery">
+        <p class="kicker">{{images|length}} images found</p>
+        <div class="grid">
+            {% for image in images %}
+            <a href="{{image}}" target="_blank">
+                <img src="{{image}}" alt="image from NASA">
+            </a>
+            {% else %}
+            <p class="no-images">No images found, try something else.</p>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+</div>
+{% endblock %}
