@@ -1,0 +1,45 @@
+<!-- will be a child of base-->
+{% extends "base.html" %}
+
+{% block styles %}
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/t1.css">
+{% endblock %}
+
+{% block content %}
+<div class="t1">
+
+    <!-- a little ringed planet drawn with css -->
+    <div class="planet"><div class="ring"></div></div>
+
+    <p class="kicker">Task 1</p>
+    <h3>NASA image search</h3>
+
+    <section class="search-box">
+        <!-- the form sends a GET request to /getSearchCriteria -->
+        <form action="{{url_for('getSearchCriteria')}}" method="GET">
+            <label for="search">NASA API SEARCH CRITERIA:</label>
+            <div class="search-bar">
+                <input type="text" id="search" name="search" placeholder="search for ..." required>
+                <input type="submit" value="submit search">
+            </div>
+        </form>
+    </section>
+
+    <!-- only show the result if we have one -->
+    {% if have_results %}
+    <section class="result">
+        <img src="{{imgPath}}" alt="image from NASA">
+        <div class="caption">
+            <p class="kicker">Description</p>
+            <p>{{description}}</p>
+        </div>
+    </section>
+    {% elif no_results %}
+    <section class="empty">
+        <p>No images found for "{{searchTerm}}", try something else.</p>
+    </section>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,159 @@
+.t1{
+    position:relative;
+    overflow:hidden;
+    min-height:82vh;
+    padding:40px 6%;
+    color:rgb(240, 234, 220);
+    /* night sky with small stars */
+    background-color:rgb(16, 22, 48);
+    background-image:
+        radial-gradient(circle, rgb(255, 255, 255) 1px, transparent 1.5px),
+        radial-gradient(circle, rgb(200, 205, 230) 1px, transparent 1.5px);
+    background-size:140px 140px, 90px 90px;
+    background-position:10px 20px, 55px 70px;
+}
+
+/* ringed planet in the top right corner */
+.planet{
+    position:absolute;
+    top:40px;
+    right:8%;
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    background-color:rgb(226, 120, 70);
+    box-shadow:inset -18px -10px 0px rgb(190, 85, 50);
+}
+
+.ring{
+    position:absolute;
+    top:42px;
+    left:-35px;
+    width:180px;
+    height:26px;
+    border:5px solid rgb(240, 210, 150);
+    border-radius:50%;
+    transform:rotate(-18deg);
+}
+
+.kicker{
+    margin-bottom:6px;
+    font-size:13px;
+    font-weight:bold;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:rgb(240, 90, 60);
+}
+
+h3{
+    position:relative;
+    font-family:"Archivo", sans-serif;
+    font-size:44px;
+    font-weight:800;
+    line-height:1;
+    margin-bottom:28px;
+}
+
+/* search form */
+.search-box{
+    position:relative;
+    max-width:760px;
+    margin-bottom:40px;
+}
+
+.search-box label{
+    display:block;
+    margin-bottom:10px;
+    font-size:14px;
+    color:rgb(170, 175, 200);
+}
+
+.search-bar{
+    display:flex;
+    border:2px solid rgb(240, 234, 220);
+    background-color:rgb(240, 234, 220);
+}
+
+.search-bar input[type="text"]{
+    flex:1;
+    padding:14px;
+    font-family:"Roboto", sans-serif;
+    font-size:17px;
+    color:rgb(16, 22, 48);
+    background-color:rgb(240, 234, 220);
+    border:none;
+    outline:none;
+}
+
+.search-bar input[type="submit"]{
+    padding:0px 26px;
+    font-family:"Archivo", sans-serif;
+    font-size:15px;
+    text-transform:uppercase;
+    color:rgb(255, 255, 255);
+    background-color:rgb(240, 90, 60);
+    border:none;
+    cursor:pointer;
+}
+
+.search-bar input[type="submit"]:hover{
+    background-color:rgb(14, 181, 232);
+}
+
+/* result: the image like a printed photo, with the description beside it */
+.result{
+    display:flex;
+    gap:40px;
+    align-items:flex-start;
+    padding-top:30px;
+    border-top:2px solid rgb(70, 80, 120);
+}
+
+.result img{
+    width:55%;
+    max-width:700px;
+    height:auto;
+    padding:12px;
+    background-color:rgb(240, 234, 220);
+    box-shadow:0px 6px 18px rgba(0, 0, 0, 0.5);
+    transform:rotate(-1deg);
+}
+
+.caption{
+    flex:1;
+    max-width:420px;
+}
+
+.caption p{
+    font-size:16px;
+    line-height:1.7;
+}
+
+.empty{
+    padding-top:30px;
+    border-top:2px solid rgb(70, 80, 120);
+    font-size:17px;
+}
+
+@media (max-width:800px){
+    h3{
+        font-size:34px;
+    }
+    .planet{
+        width:70px;
+        height:70px;
+        top:20px;
+    }
+    .ring{
+        top:26px;
+        left:-25px;
+        width:120px;
+        height:18px;
+    }
+    .result{
+        flex-direction:column;
+    }
+    .result img{
+        width:100%;
+    }
+}

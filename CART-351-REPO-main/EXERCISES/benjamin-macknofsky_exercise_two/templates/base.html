@@ -6,6 +6,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../static/css/base.css">
     <title>CART 351 EX TWO</title>
+    <!-- extra stylesheets for child pages -->
+    {% block styles %}{% endblock %}
 
     </head>
     <body>
@@ -14,6 +16,7 @@
             <nav>
                 <ul>
                     <li> <a href="{{url_for('index')}}">Home </a> </li>
+                    <li> <a href="{{url_for('t1')}}">T1 </a> </li>
                 </ul>
                 </nav>
         </header>
