@@ -52,6 +52,41 @@ On the side, I tried to clean up my repository a bit. There was an extra old .gi
 I feel a little more comfortable than last week, but I still second-guess myself a lot... I'm hoping it keeps sinking in the more I practice.</article>
 	</section>
 
+	<section>
+	<h4> WEEK 4: OCT 19th </h4>
+	<article> This week we started Flask, and honestly... Flask is weird. Not hard exactly, just a different way of thinking. I'd kind of assumed that at some point Python and the web side of this course would have to meet, and Flask is where that happens. It's a different feeling running my own server instead of just making the pages that sit on one.
+
+What I liked is that it confirmed a lot of what I'd already been guessing about how websites work. Since Exercise 1 I've been thinking of URLs as instructions, and routes made that literal: a URL points to a function, and whatever the function returns is the page. The cat-latin activity showed that even the URL itself can be input, which felt like the natural next step from the query strings I was looking at last week.
+
+Jinja is the part I'm still deciding how I feel about. Putting for loops and if statements inside HTML feels a bit backwards coming from JavaScript, where the HTML stays static and the script does the logic. I can see why it's useful though, since the server can build the whole page before it ever reaches the browser.
+
+So, weird, but in a way that makes sense. I'm curious to see how far it can go.</article>
+	</section>
+
+	<section>
+	<h4> WEEK 5: OCT 26th </h4>
+	<article> Flask II was mostly about making projects cleaner, and template inheritance was the highlight for me. I'd been copying the same header and footer into every page of my homepage and journal, and I'd always figured there had to be a better way to do that. There was. One base.html and every page only fills in what's different. It's satisfying when a hunch like that turns out to be right.
+
+GET vs POST also lined up with what I'd suspected. I'd noticed before that some sites put your search right in the URL and others don't, and now I know why: GET puts the data in the address bar where anyone can see it, and POST tucks it into the request instead. It makes me look at the sites I use every day a little differently, especially when it comes to what information they're sending around.
+
+Exercise 2 was assigned this week, using the NASA Image API. After the Star Wars API in Exercise 1 I had a pretty good idea of what that would involve, and I was actually looking forward to it. Getting the starter running in the browser was a good first step.
+
+There are a lot of pieces in a Flask project now (the Python file, templates, static files, routes), but they're starting to feel like one system instead of a pile of separate things.</article>
+	</section>
+
+	<section>
+	<h4> WEEK 6: NOV 2nd </h4>
+	<article> Exercise 2 was due this week, and it's the most eye opening thing we've done so far. I type something into a search bar on my own page, it goes to my Python file, my Python file asks NASA's archive, and the images come back onto my page. I already knew what a server does, but it was really cool to actually make one myself and see it working with real data.
+
+The subject helped too. Searching "nebula" and getting a whole wall of space images on a page I made was genuinely exciting, and it's the first time in this class I kept playing with something after it was done.
+
+I put a lot of thought into the design. The brief said it should be visually enticing, and I didn't want it to look like a generic template anyone could have made. I tried a few directions before settling on a space theme, a night sky with a little ringed planet and the images framed like printed photos, and I'm happy with where it ended up. I realized that making something look like it's mine matters more to me than just making it look clean.
+
+When I put it on GitHub Pages, the templates showed up as raw code instead of the actual page. I'd half expected something like that, since GitHub Pages only serves static files and there's no Python running to fill the templates in. It's something I'll have to plan for with the mini projects, since a Flask project can't just be shared as a link the same way.
+
+The Flask III lecture on sessions and fetch is where things start to get more advanced, and it's a lot of new syntax at once. But after this exercise I'm motivated to dig into it.</article>
+	</section>
+
 </main>
   <!-- the footer div -->
 <footer>
