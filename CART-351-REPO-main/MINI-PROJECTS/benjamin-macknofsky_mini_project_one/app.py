@@ -90,5 +90,15 @@ def add_guess():
 
 
 #*************************************************
+# FETCH GET: the page asks for everyone's readings here
+# sends back the whole json file
+@app.route("/api/guesses")
+def get_guesses():
+    with file_lock:
+        guesses = load_guesses()
+    return jsonify(guesses)
+
+
+#*************************************************
 #run
 app.run(debug=True)

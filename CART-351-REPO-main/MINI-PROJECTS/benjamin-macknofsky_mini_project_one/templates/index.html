@@ -16,10 +16,11 @@
         <!-- the grass you're lying in, along the bottom of the screen -->
         <div id="grass"></div>
 
-        <!-- title in the corner -->
+        <!-- title in the corner + how many readings there are so far -->
         <header id="title">
             <h1>Cloud Reading</h1>
             <p>what do you see?</p>
+            <p id="count"></p>
         </header>
 
         <!-- the box that opens next to a cloud when you click it -->
@@ -29,11 +30,24 @@
                 <input id="reading-input" type="text" maxlength="40" placeholder="a dog, a ship, my grandma...">
                 <button type="submit">tell the sky</button>
             </div>
+            <!-- how many times this cloud has been read, and how many readings got pushed out -->
+            <p id="reading-info"></p>
         </form>
+
+        <!-- intro screen, goes away when you click "look up" -->
+        <div id="intro">
+            <div class="card">
+                <h2>lie back and look up.</h2>
+                <p>click a cloud and tell the sky what you see in it.</p>
+                <p>everyone else's readings float around the clouds. the more people see the same thing, the louder it gets.</p>
+                <button id="intro-button">look up</button>
+            </div>
+        </div>
 
         <!-- p5.js library, then my scripts -->
         <script src="https://cdn.jsdelivr.net/npm/p5@1.11.1/lib/p5.min.js"></script>
         <script src="{{ url_for('static', filename='js/clouds.js') }}"></script>
         <script src="{{ url_for('static', filename='js/reading.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/whispers.js') }}"></script>
     </body>
 </html>

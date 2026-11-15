@@ -2,7 +2,7 @@
 // what happens when you click a cloud and say what you see
 //
 // sections:
-//   1. setup
+//   1. setup (+ the intro button)
 //   2. opening + closing the box
 //   3. sending a reading to the server (fetch POST)
 //   4. every frame: move the box + floating words
@@ -13,6 +13,12 @@
 
 const form = document.getElementById("reading");
 const input = document.getElementById("reading-input");
+const info = document.getElementById("reading-info");
+
+// the intro fades away when you click "look up"
+document.getElementById("intro-button").addEventListener("click", function () {
+    document.getElementById("intro").classList.add("gone");
+});
 
 // words that float up after you submit
 let floaters = [];
@@ -34,6 +40,7 @@ function skyClicked(x, y) {
 function openReading(cloud) {
     selectedCloud = cloud;
     input.value = "";
+    info.textContent = cloudInfo(cloud.id); // "read 5 times" etc. (in whispers.js)
     form.classList.add("open");
     input.focus();
 }
@@ -77,6 +84,9 @@ form.addEventListener("submit", async function (event) {
         }
 
         console.log("cloud " + result.cloud + " has been read " + result.readings.length + " time(s)");
+
+        // add it to the whispers right away (in whispers.js)
+        readingsUpdated(result.cloud, result.readings);
 
         // float their words up off the cloud
         floaters.push({ text: guess, cloud: cloud, age: 0 });

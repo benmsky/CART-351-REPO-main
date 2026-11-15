@@ -51,6 +51,9 @@ function draw() {
         drawCloud(cloud, seconds);
     }
 
+    // everyone's readings floating around the clouds (in whispers.js)
+    drawWhispers(seconds);
+
     // hand cursor over a cloud so people know they can click it
     cursor(cloudAt(mouseX, mouseY) ? HAND : ARROW);
 
@@ -116,6 +119,7 @@ function makeCloud(id) {
         puffs: puffs,
         depth: depth,
         width: (maxX - minX) * depth,
+        height: (maxY - minY) * depth,
         speed: between(rand, 9, 18) * depth,     // pixels per second
         heightFrac: between(rand, 0.12, 0.62),   // how high up (0 = top of the screen)
         // spread the clouds out evenly, with a bit of randomness
