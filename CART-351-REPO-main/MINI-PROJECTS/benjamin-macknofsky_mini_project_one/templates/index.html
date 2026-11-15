@@ -10,7 +10,7 @@
         <title>Cloud Reading</title>
     </head>
     <body>
-        <!-- the sky (the clouds get drawn in here later) -->
+        <!-- the sky: p5.js draws the clouds on a canvas in here -->
         <div id="sky"></div>
 
         <!-- the grass you're lying in, along the bottom of the screen -->
@@ -21,5 +21,9 @@
             <h1>Cloud Reading</h1>
             <p>what do you see?</p>
         </header>
+
+        <!-- p5.js library, then my cloud sketch -->
+        <script src="https://cdn.jsdelivr.net/npm/p5@1.11.1/lib/p5.min.js"></script>
+        <script src="{{ url_for('static', filename='js/clouds.js') }}"></script>
     </body>
 </html>
