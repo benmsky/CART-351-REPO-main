@@ -22,8 +22,18 @@
             <p>what do you see?</p>
         </header>
 
-        <!-- p5.js library, then my cloud sketch -->
+        <!-- the box that opens next to a cloud when you click it -->
+        <form id="reading" autocomplete="off">
+            <label for="reading-input">what do you see?</label>
+            <div class="row">
+                <input id="reading-input" type="text" maxlength="40" placeholder="a dog, a ship, my grandma...">
+                <button type="submit">tell the sky</button>
+            </div>
+        </form>
+
+        <!-- p5.js library, then my scripts -->
         <script src="https://cdn.jsdelivr.net/npm/p5@1.11.1/lib/p5.min.js"></script>
         <script src="{{ url_for('static', filename='js/clouds.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/reading.js') }}"></script>
     </body>
 </html>

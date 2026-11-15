@@ -1,4 +1,8 @@
-/* CLOUD READING - styles */
+/* CLOUD READING - style.css
+   sections: page, sky + grass, title, reading box */
+
+
+/****************************************** PAGE */
 
 * {
     box-sizing: border-box;
@@ -7,22 +11,25 @@
 html, body {
     margin: 0;
     height: 100%;
-    overflow: hidden; /* the sky fills the whole window, no scrolling */
+    overflow: hidden; /* no scrolling */
     font-family: "Roboto", sans-serif;
 }
 
-/* bright daytime sky: deeper blue at the top, paler near the horizon */
+/* the daytime sky: darker blue at the top, lighter at the bottom */
 body {
     background: linear-gradient(to bottom, #3d8fd9 0%, #74b6ec 45%, #bfe0f7 80%, #e4f2fb 100%);
 }
 
-/* the sky layer (the cloud canvas goes in here) */
+
+/****************************************** SKY + GRASS */
+
+/* the p5 canvas goes in here */
 #sky {
     position: fixed;
     inset: 0;
 }
 
-/* a soft band of grass along the bottom, like you're lying in a field looking up */
+/* grass at the bottom, like you're lying in a field looking up */
 #grass {
     position: fixed;
     left: 0;
@@ -30,10 +37,13 @@ body {
     bottom: 0;
     height: 70px;
     background: linear-gradient(to bottom, rgba(96, 163, 72, 0) 0%, #6fae4f 45%, #4f8f36 100%);
-    pointer-events: none; /* clicks go through to the sky */
+    pointer-events: none; /* lets clicks go through to the clouds */
 }
 
-/* title in the top left corner */
+
+/****************************************** TITLE */
+
+/* top left corner */
 #title {
     position: fixed;
     top: 24px;
@@ -55,4 +65,64 @@ body {
     font-weight: 300;
     font-size: 1rem;
     opacity: 0.9;
+}
+
+
+/****************************************** READING BOX */
+
+/* hidden until you click a cloud (reading.js adds the "open" class) */
+#reading {
+    position: fixed;
+    transform: translate(-50%, -100%); /* sits centred above the cloud */
+    display: none;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 6px 24px rgba(30, 80, 140, 0.25);
+    color: #2f5f8f;
+}
+
+#reading.open {
+    display: block;
+}
+
+#reading label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+}
+
+#reading .row {
+    display: flex;
+    gap: 6px;
+}
+
+#reading input {
+    width: min(210px, 50vw);
+    padding: 7px 10px;
+    border: 1px solid #b7d4ef;
+    border-radius: 8px;
+    font: inherit;
+    color: #24486d;
+    outline: none;
+}
+
+#reading input:focus {
+    border-color: #74b6ec;
+}
+
+#reading button {
+    padding: 7px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #3d8fd9;
+    color: #ffffff;
+    font: inherit;
+    white-space: nowrap; /* keeps "tell the sky" on one line */
+    cursor: pointer;
+}
+
+#reading button:hover {
+    background: #2f7cc2;
 }
