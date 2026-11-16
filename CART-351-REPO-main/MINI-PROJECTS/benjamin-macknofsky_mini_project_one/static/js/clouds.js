@@ -4,7 +4,7 @@
 // sections:
 //   1. settings
 //   2. setup + draw (p5 runs these)
-//   3. making a cloud
+//   3. making a cloud (+ 3b. scattering them around the sky)
 //   4. moving a cloud
 //   5. drawing a cloud
 //   6. clicking a cloud
@@ -14,8 +14,15 @@
 //*************************************************
 // 1. SETTINGS
 
-const NUM_CLOUDS = 9;   // how many clouds (has to match NUM_CLOUDS in app.py)
+const NUM_CLOUDS = 7;   // how many clouds (has to match NUM_CLOUDS in app.py)
 const MARGIN = 260;     // how far off screen a cloud goes before it loops back
+
+// the slowest and fastest a cloud can drift (pixels per second)
+const MIN_SPEED = 6;
+const MAX_SPEED = 17;
+
+// the random seed for where the clouds go (I tried a bunch and this one spreads them out nicely)
+const SKY_SEED = 5;
 
 let clouds = [];
 let selectedCloud = null; // the cloud someone clicked on (used in reading.js)
@@ -33,10 +40,11 @@ function setup() {
         skyClicked(event.clientX, event.clientY);
     });
 
-    // make all the clouds
+    // make all the clouds, then scatter them around the sky
     for (let i = 0; i < NUM_CLOUDS; i++) {
         clouds.push(makeCloud(i));
     }
+    scatterClouds(SKY_SEED);
     // small (far away) clouds first, so the big ones get drawn on top
     clouds.sort((a, b) => a.depth - b.depth);
 }
@@ -70,31 +78,74 @@ function windowResized() {
 // 3. MAKING A CLOUD
 // a cloud is just a bunch of circles ("puffs") squished together
 // the id is used as the seed, so cloud 3 is always the same shape for everyone
+//
+// there are 6 kinds of cloud so the sky has a real mix:
+//   big       - a huge billowy one
+//   long      - a long thin streak
+//   tower     - tall and stacked up
+//   creature  - a lumpy body with "limbs" (could be a neck, tail, ear, arm... or nothing)
+//   scattered - a few chunky clumps broken apart
+// all random, so they kind of look like something but never one thing. people fill in the rest
+
+// which kind each cloud is (cloud 0 is a creature, cloud 1 is big, etc.)
+const KINDS = ["creature", "big", "long", "tower", "creature", "scattered", "big"];
+
+// the biggest each kind can be [width, height] before it gets shrunk down,
+// and how much its size can change [smallest, biggest]
+const KIND_SIZES = {
+    big:       { max: [460, 190], size: [0.92, 1.05] },
+    long:      { max: [480, 105], size: [0.9, 1.05] },
+    tower:     { max: [250, 230], size: [0.92, 1.05] },
+    creature:  { max: [400, 185], size: [0.88, 1.05] },
+    scattered: { max: [440, 135], size: [0.9, 1.05] }
+};
 
 function makeCloud(id) {
     const rand = seededRandom(id * 9973 + 17);
+    const kind = KINDS[id];
+    let puffs = [];
 
-    // smaller = further away = slower
-    const depth = between(rand, 0.6, 1.1);
-
-    // start with one puff, then keep sticking new puffs onto random old ones
-    // this gives the clouds weird lumps and arms, so there's stuff to see in them
-    const puffs = [{ x: 0, y: 0, r: between(rand, 34, 46), phase: rand() * Math.PI * 2 }];
-    const count = Math.floor(between(rand, 10, 19));
-
-    for (let i = 1; i < count; i++) {
-        const parent = puffs[Math.floor(rand() * puffs.length)];
-        const r = between(rand, 12, 42);
-        // grow mostly sideways and up (negative y is up in p5)
-        const angle = between(rand, Math.PI * 0.9, Math.PI * 2.1);
-        const dist = (parent.r + r) * between(rand, 0.5, 0.8);
-        puffs.push({
-            x: parent.x + Math.cos(angle) * dist,
-            // keep the bottom kinda flat like real clouds
-            y: Math.min(parent.y + Math.sin(angle) * dist, 14),
-            r: r,
-            phase: rand() * Math.PI * 2   // for the breathing (see breathe())
-        });
+    if (kind === "big") {
+        // lots of big puffs bunched together, with bumps all over the top
+        addBody(puffs, rand, 9, 14, 95, 24, 42, 72);
+        addLumps(puffs, rand, 5, 9);
+    } else if (kind === "long") {
+        // a long line of puffs, fattest in the middle and thinner at the ends
+        const count = Math.floor(between(rand, 18, 26));
+        for (let i = 0; i < count; i++) {
+            const along = i / (count - 1) * 2 - 1;          // -1 at one end, 1 at the other
+            const fat = 1 - Math.abs(along) * 0.5;          // thinner towards the ends
+            puffs.push(makePuff(rand, along * 190 + between(rand, -6, 6), between(rand, -12, 8), between(rand, 28, 44) * fat));
+        }
+    } else if (kind === "tower") {
+        // a wide base, then puffs stacked up on top of each other, leaning a bit
+        addBody(puffs, rand, 3, 5, 60, 8, 40, 55);
+        let x = 0, y = -26, r = between(rand, 42, 52);
+        const lean = between(rand, -10, 10);
+        const levels = Math.floor(between(rand, 4, 7));
+        for (let i = 0; i < levels; i++) {
+            puffs.push(makePuff(rand, x, y, r));
+            puffs.push(makePuff(rand, x + between(rand, -r, r) * 0.6, y + between(rand, -8, 8), r * 0.7)); // a side bump
+            x += lean + between(rand, -8, 8);
+            y -= r * 0.75;
+            r *= between(rand, 0.84, 0.95);
+        }
+    } else if (kind === "creature") {
+        // a big lumpy body with 2 to 4 chunky limbs growing out of it
+        addBody(puffs, rand, 4, 8, 60, 20, 36, 58);
+        addLimbs(puffs, rand, 2, 5);
+        addLumps(puffs, rand, 2, 5);
+    } else {
+        // scattered: 3 or 4 chunky clumps in a loose line, like a cloud that's breaking up
+        const clumps = Math.floor(between(rand, 3, 5));
+        for (let i = 0; i < clumps; i++) {
+            const cx = (i - (clumps - 1) / 2) * between(rand, 95, 115);
+            const cy = between(rand, -22, 22);
+            const count = Math.floor(between(rand, 4, 7));
+            for (let j = 0; j < count; j++) {
+                puffs.push(makePuff(rand, cx + between(rand, -26, 26), cy + between(rand, -12, 8), between(rand, 22, 38)));
+            }
+        }
     }
 
     // find the edges of the cloud so we can centre it
@@ -105,28 +156,199 @@ function makeCloud(id) {
         minY = Math.min(minY, p.y - p.r);
         maxY = Math.max(maxY, p.y + p.r);
     }
-    // centre it and shrink it if it's far away
+
+    // shrink it if it's too big for its kind, then give it a random size
+    const limits = KIND_SIZES[kind];
+    const fit = Math.min(1, limits.max[0] / (maxX - minX), limits.max[1] / (maxY - minY));
+    const size = fit * between(rand, limits.size[0], limits.size[1]);
+
+    // centre it on its own middle and apply the size
     const midX = (minX + maxX) / 2;
     const midY = (minY + maxY) / 2;
     for (const p of puffs) {
-        p.x = (p.x - midX) * depth;
-        p.y = (p.y - midY) * depth;
-        p.r = p.r * depth;
+        p.x = (p.x - midX) * size;
+        p.y = (p.y - midY) * size;
+        p.r = p.r * size;
     }
 
     return {
         id: id,
+        kind: kind,
         puffs: puffs,
-        depth: depth,
-        width: (maxX - minX) * depth,
-        height: (maxY - minY) * depth,
-        speed: between(rand, 9, 18) * depth,     // pixels per second
-        heightFrac: between(rand, 0.12, 0.62),   // how high up (0 = top of the screen)
-        // spread the clouds out evenly, with a bit of randomness
-        startFrac: id / NUM_CLOUDS + between(rand, -0.04, 0.04),
+        depth: size,                      // bigger clouds get drawn in front
+        width: (maxX - minX) * size,
+        height: (maxY - minY) * size,
+        speed: 0,                         // these 3 get picked in scatterClouds()
+        heightFrac: 0,                    // how high up (0 = top of the screen)
+        startFrac: 0,                     // where it starts across the sky
         x: 0,
         y: 0
     };
+}
+
+
+//*************************************************
+// 3b. SCATTERING THE CLOUDS
+// every cloud gets a random height, speed and starting spot
+// the only rule: if two clouds are at the same height, they have to drift at the same speed,
+// otherwise the faster one would catch up and crash into the other one.
+// clouds at different heights can have whatever speed they want
+
+// a cloud's height and width as fractions of the sky
+// (the numbers are safe guesses that work on small and big screens, see skyScale())
+function tallness(c) { return (c.height + 10) / 590; }
+function wideness(c) { return (c.width + 50) / 1500; }
+
+function scatterClouds(seed) {
+    const rand = seededRandom(seed);
+    const placed = [];
+
+    // biggest clouds first, they're the hardest to fit
+    const order = clouds.slice().sort((a, b) => b.height - a.height);
+
+    for (const c of order) {
+        // try to fit it, and shrink it a little each time it doesn't fit
+        // (but only a few times, otherwise it could keep trying forever and freeze the page)
+        let fits = placeCloud(c, placed, rand);
+        for (let shrinks = 0; !fits && shrinks < 8; shrinks++) {
+            shrinkCloud(c, 0.9);
+            fits = placeCloud(c, placed, rand);
+        }
+        if (fits) placed.push(c);
+    }
+
+    // any cloud that still didn't fit gets left out of the sky, so nothing ever overlaps
+    // (with SKY_SEED set right, every cloud fits and this never happens)
+    clouds = placed;
+
+    // now spread out the clouds that share a speed, with random gaps so they never touch
+    const speeds = [...new Set(clouds.map(c => c.speed))];
+    for (const speed of speeds) {
+        const group = clouds.filter(c => c.speed === speed);
+        const room = 1 - group.reduce((total, c) => total + wideness(c), 0);
+        const gaps = group.map(() => between(rand, 0.2, 1));
+        const gapTotal = gaps.reduce((a, b) => a + b, 0);
+
+        let pos = rand(); // start somewhere random
+        group.forEach(function (c, i) {
+            c.startFrac = pos + wideness(c) / 2;
+            pos += wideness(c) + room * gaps[i] / gapTotal;
+        });
+    }
+}
+
+// tries to find a height + speed for one cloud. gives back true if it found one
+function placeCloud(c, placed, rand) {
+    const half = tallness(c) / 2;
+    // which clouds would it be level with at height y?
+    const levelWith = y => placed.filter(o => Math.abs(o.heightFrac - y) < half + tallness(o) / 2);
+
+    // 1st choice: a height where it's not level with anyone, so it gets its own speed
+    for (let tries = 0; tries < 300; tries++) {
+        const y = between(rand, half - 0.07, 0.85 - half); // on screen and above the grass
+        if (levelWith(y).length === 0) {
+            c.heightFrac = y;
+            c.speed = newSpeed(placed, rand);
+            return true;
+        }
+    }
+
+    // 2nd choice: share a height with clouds that all have the same speed (and match it)
+    for (let tries = 0; tries < 300; tries++) {
+        const y = between(rand, half - 0.07, 0.85 - half);
+        const level = levelWith(y);
+
+        // (if this spot happens to be empty after all, just take it with its own speed)
+        if (level.length === 0) {
+            c.heightFrac = y;
+            c.speed = newSpeed(placed, rand);
+            return true;
+        }
+
+        const speed = level[0].speed;
+        if (!level.every(o => o.speed === speed)) continue;
+
+        // there has to be room across the sky for it and the others at that speed
+        const used = placed.filter(o => o.speed === speed)
+                           .reduce((total, o) => total + wideness(o), wideness(c));
+        if (used > 0.85) continue;
+
+        c.heightFrac = y;
+        c.speed = speed;
+        return true;
+    }
+
+    return false; // no luck, it'll get shrunk and try again
+}
+
+// picks a speed that's clearly different from the other speeds already in the sky
+// (so you can actually see the clouds drifting at different speeds)
+function newSpeed(placed, rand) {
+    let speed = between(rand, MIN_SPEED, MAX_SPEED);
+    for (let tries = 0; tries < 50; tries++) {
+        if (placed.every(o => Math.abs(o.speed - speed) > 1.2)) break;
+        speed = between(rand, MIN_SPEED, MAX_SPEED);
+    }
+    return speed;
+}
+
+// makes a cloud a bit smaller (used when it can't find a spot)
+function shrinkCloud(c, amount) {
+    for (const p of c.puffs) {
+        p.x *= amount;
+        p.y *= amount;
+        p.r *= amount;
+    }
+    c.width *= amount;
+    c.height *= amount;
+    c.depth *= amount;
+}
+
+// one puff: where it is, how big, and a random starting point for its breathing
+function makePuff(rand, x, y, r) {
+    return { x: x, y: y, r: r, phase: rand() * Math.PI * 2 };
+}
+
+// a body: some puffs bunched together
+// (how many, how wide, how tall, and how small/big the puffs are)
+function addBody(puffs, rand, minCount, maxCount, wide, tall, minR, maxR) {
+    const count = Math.floor(between(rand, minCount, maxCount));
+    for (let i = 0; i < count; i++) {
+        puffs.push(makePuff(rand, between(rand, -wide, wide), between(rand, -tall, tall * 0.6), between(rand, minR, maxR)));
+    }
+}
+
+// limbs: lines of puffs growing out of the body that get smaller and bend a little
+function addLimbs(puffs, rand, minCount, maxCount) {
+    const body = puffs.slice(); // only grow limbs out of the body, not out of other limbs
+    const count = Math.floor(between(rand, minCount, maxCount));
+    for (let i = 0; i < count; i++) {
+        const start = body[Math.floor(rand() * body.length)];
+        // point it up or sideways, sometimes a little down (negative y is up in p5)
+        let angle = between(rand, Math.PI * 0.85, Math.PI * 2.15);
+        let r = between(rand, 26, 40);
+        let x = start.x + Math.cos(angle) * start.r * 0.9;
+        let y = start.y + Math.sin(angle) * start.r * 0.9;
+        const length = Math.floor(between(rand, 3, 6));
+
+        for (let j = 0; j < length; j++) {
+            puffs.push(makePuff(rand, x, Math.min(y, 30), r));
+            angle += between(rand, -0.5, 0.5);
+            x += Math.cos(angle) * r * 1.05;
+            y += Math.sin(angle) * r * 1.05;
+            r *= between(rand, 0.78, 0.94);
+        }
+    }
+}
+
+// small bumps on top of the body so it isn't perfectly smooth
+function addLumps(puffs, rand, minCount, maxCount) {
+    const body = puffs.slice();
+    const count = Math.floor(between(rand, minCount, maxCount));
+    for (let i = 0; i < count; i++) {
+        const base = body[Math.floor(rand() * body.length)];
+        puffs.push(makePuff(rand, base.x + between(rand, -20, 20), base.y - base.r * 0.6, between(rand, 12, 22)));
+    }
 }
 
 
@@ -209,9 +431,10 @@ function cloudAt(mx, my) {
 //*************************************************
 // 7. LITTLE HELPERS
 
-// cloud size based on the screen: full size on a big screen, a bit smaller on a small one
+// cloud size based on the screen: full size on a big screen, smaller on a small one
+// (it checks the height too, so the rows still fit on short wide laptop screens)
 function skyScale() {
-    return constrain(width / 1200, 0.75, 1.25);
+    return constrain(Math.min(width / 1100, height / 760), 0.7, 1.25);
 }
 
 // puffs grow and shrink a tiny bit so the sky feels alive

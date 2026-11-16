@@ -15,7 +15,7 @@ app = Flask(__name__)
 DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "guesses.json")
 
 # how many clouds there are (has to match NUM_CLOUDS in clouds.js)
-NUM_CLOUDS = 9
+NUM_CLOUDS = 7
 
 # longest a reading can be
 MAX_LENGTH = 40
@@ -61,7 +61,7 @@ def index():
 def add_guess():
     data = request.get_json(silent=True) or {}
 
-    # check the cloud number is real (0 to 8)
+    # check the cloud number is real (0 to 6)
     cloud = data.get("cloud")
     if not isinstance(cloud, int) or cloud < 0 or cloud >= NUM_CLOUDS:
         return jsonify({"error": "that cloud doesn't exist"}), 400

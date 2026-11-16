@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "cloud-reading",
+      "runtimeExecutable": "C:\\Users\\mechm\\miniconda3\\envs\\cart351\\python.exe",
+      "runtimeArgs": ["CART-351-REPO-main\\MINI-PROJECTS\\benjamin-macknofsky_mini_project_one\\app.py"],
+      "port": 5000
+    }
+  ]
+}

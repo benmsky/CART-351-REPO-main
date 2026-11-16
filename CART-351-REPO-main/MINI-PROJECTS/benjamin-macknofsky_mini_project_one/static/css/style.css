@@ -49,7 +49,7 @@ body {
     top: 24px;
     left: 32px;
     color: #ffffff;
-    text-shadow: 0 1px 6px rgba(30, 80, 140, 0.35);
+    text-shadow: 0 1px 3px rgba(30, 80, 140, 0.6), 0 0 12px rgba(30, 80, 140, 0.45); /* readable even over a cloud */
     pointer-events: none;
 }
 
@@ -138,10 +138,19 @@ body {
     display: none;
 }
 
-/* total readings under the title */
+/* total readings under the title, on a little blue pill so you can read it over a cloud */
 #count {
+    display: inline-block;
     margin-top: 10px !important;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(40, 100, 170, 0.45);
     font-size: 0.85rem !important;
+    text-shadow: none;
+}
+
+#count:empty {
+    display: none;
 }
 
 
