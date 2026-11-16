@@ -1,5 +1,6 @@
 /* CLOUD READING - style.css
-   sections: page, sky + grass, title, reading box, intro */
+   the look is inspired by windows xp: blue title bars, beige windows, a taskbar and a green hill
+   sections: page, sky + hill, desktop icon, xp windows, reading window, intro window, time zone window, taskbar */
 
 
 /****************************************** PAGE */
@@ -12,16 +13,17 @@ html, body {
     margin: 0;
     height: 100%;
     overflow: hidden; /* no scrolling */
-    font-family: "Roboto", sans-serif;
+    font-family: Tahoma, Verdana, "Segoe UI", sans-serif;
+    font-size: 13px;
 }
 
-/* the daytime sky: darker blue at the top, lighter at the bottom */
+/* the daytime sky: deep blue at the top, pale near the hill */
 body {
-    background: linear-gradient(to bottom, #3d8fd9 0%, #74b6ec 45%, #bfe0f7 80%, #e4f2fb 100%);
+    background: linear-gradient(to bottom, #1d6ad6 0%, #4a92ea 40%, #8ec0f5 75%, #c9e2fb 100%);
 }
 
 
-/****************************************** SKY + GRASS */
+/****************************************** SKY + HILL */
 
 /* the p5 canvas goes in here */
 #sky {
@@ -29,58 +31,136 @@ body {
     inset: 0;
 }
 
-/* grass at the bottom, like you're lying in a field looking up */
+/* a big rounded green hill, like you're lying on it looking up */
 #grass {
     position: fixed;
-    left: 0;
-    right: 0;
+    left: -15%;
+    width: 130%;
     bottom: 0;
-    height: 70px;
-    background: linear-gradient(to bottom, rgba(96, 163, 72, 0) 0%, #6fae4f 45%, #4f8f36 100%);
+    height: 140px;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0; /* makes the top round */
+    background: radial-gradient(ellipse at 50% 0%, #93d556 0%, #62ad2f 35%, #3f8c1d 75%, #2f7414 100%);
     pointer-events: none; /* lets clicks go through to the clouds */
 }
 
 
-/****************************************** TITLE */
+/****************************************** DESKTOP ICON */
 
-/* top left corner */
+/* top left corner, like a shortcut on the desktop */
 #title {
     position: fixed;
-    top: 24px;
-    left: 32px;
+    top: 18px;
+    left: 18px;
+    width: 86px;
+    padding: 4px;
+    border: 1px solid transparent;
+    background: none;
     color: #ffffff;
-    text-shadow: 0 1px 3px rgba(30, 80, 140, 0.6), 0 0 12px rgba(30, 80, 140, 0.45); /* readable even over a cloud */
-    pointer-events: none;
+    font: inherit;
+    text-align: center;
+    cursor: pointer;
 }
 
-#title h1 {
-    margin: 0;
-    font-weight: 500;
-    font-size: 2rem;
-    letter-spacing: 0.04em;
+#title .icon {
+    display: block;
+    width: 48px;
+    height: 34px;
+    margin: 0 auto 4px;
+    fill: #ffffff;
+    filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.35));
 }
 
-#title p {
-    margin: 4px 0 0;
-    font-weight: 300;
-    font-size: 1rem;
-    opacity: 0.9;
+/* the label under the icon, with the dark shadow xp desktop icons have */
+#title span {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.85);
+}
+
+/* when you hover or click it, it gets the blue selected look */
+#title:hover span,
+#title:focus span {
+    background: #316ac5;
+    text-shadow: none;
 }
 
 
-/****************************************** READING BOX */
+/****************************************** XP WINDOWS */
+/* the shared look for the reading window and the intro window */
+
+.xp-window {
+    border: 3px solid #0831d9;
+    border-top: none;
+    border-radius: 8px 8px 0 0;
+    background: #ece9d8;
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.35);
+    color: #000000;
+}
+
+/* the blue bar along the top with the title and the X */
+.xp-window .title-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 -3px; /* goes over the window border so it reaches the edges */
+    padding: 3px 5px 3px 8px;
+    border-radius: 8px 8px 0 0;
+    background: linear-gradient(to bottom, #0997ff 0%, #0053ee 8%, #0050ee 40%, #0066ff 88%, #005bff 95%, #003dd7 100%);
+    color: #ffffff;
+    font-weight: bold;
+    text-shadow: 1px 1px #0f1089;
+}
+
+/* the red X button */
+.xp-window .close {
+    width: 21px;
+    height: 21px;
+    padding: 0;
+    border: 1px solid #ffffff;
+    border-radius: 3px;
+    background: linear-gradient(to bottom, #e8866c 0%, #d74c26 45%, #c6371a 100%);
+    color: #ffffff;
+    font: bold 16px/17px Tahoma, sans-serif;
+    cursor: pointer;
+}
+
+.xp-window .close:hover {
+    background: linear-gradient(to bottom, #f19c84 0%, #e5603b 45%, #d4482a 100%);
+}
+
+.xp-window .window-body {
+    padding: 12px;
+}
+
+/* the grey-white xp button */
+.xp-button {
+    min-width: 75px;
+    padding: 4px 12px;
+    border: 1px solid #003c74;
+    border-radius: 3px;
+    background: linear-gradient(to bottom, #ffffff 0%, #ecebe6 86%, #d6d0c5 100%);
+    color: #000000;
+    font: inherit;
+    white-space: nowrap; /* keeps "Tell the sky" on one line */
+    cursor: pointer;
+}
+
+/* xp buttons get an orange glow when you hover */
+.xp-button:hover {
+    box-shadow: inset 0 0 0 2px #f8b636;
+}
+
+.xp-button:focus-visible {
+    outline: 1px dotted #000000;
+    outline-offset: -4px;
+}
+
+
+/****************************************** READING WINDOW */
 
 /* hidden until you click a cloud (reading.js adds the "open" class) */
 #reading {
     position: fixed;
     transform: translate(-50%, -100%); /* sits centred above the cloud */
     display: none;
-    padding: 12px 14px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(6px);
-    box-shadow: 0 6px 24px rgba(30, 80, 140, 0.25);
-    color: #2f5f8f;
 }
 
 #reading.open {
@@ -89,8 +169,7 @@ body {
 
 #reading label {
     display: block;
-    margin-bottom: 6px;
-    font-size: 0.9rem;
+    margin-bottom: 8px;
 }
 
 #reading .row {
@@ -100,113 +179,180 @@ body {
 
 #reading input {
     width: min(210px, 50vw);
-    padding: 7px 10px;
-    border: 1px solid #b7d4ef;
-    border-radius: 8px;
+    padding: 3px 5px;
+    border: 1px solid #7f9db9;
+    background: #ffffff;
     font: inherit;
-    color: #24486d;
     outline: none;
-}
-
-#reading input:focus {
-    border-color: #74b6ec;
-}
-
-#reading button {
-    padding: 7px 12px;
-    border: none;
-    border-radius: 8px;
-    background: #3d8fd9;
-    color: #ffffff;
-    font: inherit;
-    white-space: nowrap; /* keeps "tell the sky" on one line */
-    cursor: pointer;
-}
-
-#reading button:hover {
-    background: #2f7cc2;
 }
 
 /* the little line under the box, like "read 5 times" */
 #reading-info {
-    margin: 6px 0 0;
-    font-size: 0.78rem;
-    color: #6b8fb3;
+    margin: 8px 0 0;
+    color: #555555;
+    font-size: 11px;
 }
 
 #reading-info:empty {
     display: none;
 }
 
-/* total readings under the title, on a little blue pill so you can read it over a cloud */
-#count {
-    display: inline-block;
-    margin-top: 10px !important;
-    padding: 3px 10px;
-    border-radius: 999px;
-    background: rgba(40, 100, 170, 0.45);
-    font-size: 0.85rem !important;
-    text-shadow: none;
-}
 
-#count:empty {
-    display: none;
-}
+/****************************************** INTRO WINDOW */
 
-
-/****************************************** INTRO */
-
-/* covers the sky with a soft blur until you click "look up" */
+/* covers the sky until you click "Look up" (so you can't click clouds behind it) */
 #intro {
     position: fixed;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(61, 143, 217, 0.25);
-    backdrop-filter: blur(5px);
-    transition: opacity 0.8s;
+    transition: opacity 0.4s;
 }
 
-/* reading.js adds this when you click the button, so it fades away */
+/* reading.js adds this when you close it, so it fades away */
 #intro.gone {
     opacity: 0;
     pointer-events: none;
 }
 
-#intro .card {
-    max-width: 380px;
-    padding: 28px 30px;
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.88);
-    box-shadow: 0 10px 40px rgba(30, 80, 140, 0.3);
-    color: #2f5f8f;
-    text-align: center;
+#intro .xp-window {
+    width: min(380px, 90vw);
 }
 
 #intro h2 {
-    margin: 0 0 12px;
-    font-weight: 500;
+    margin: 4px 0 10px;
+    color: #0b3c9c;
+    font-size: 16px;
 }
 
 #intro p {
     margin: 0 0 10px;
-    font-weight: 300;
     line-height: 1.45;
 }
 
-#intro button {
-    margin-top: 10px;
-    padding: 9px 22px;
-    border: none;
-    border-radius: 10px;
-    background: #3d8fd9;
-    color: #ffffff;
+#intro .buttons {
+    margin-top: 14px;
+    text-align: right;
+}
+
+
+/****************************************** TIME ZONE WINDOW */
+
+/* pops up above the start button, like a start menu (reading.js adds "open") */
+#timezone {
+    position: fixed;
+    left: 6px;
+    bottom: 40px;
+    width: min(340px, 94vw);
+    display: none;
+}
+
+#timezone.open {
+    display: block;
+}
+
+#timezone p {
+    margin: 0 0 8px;
+}
+
+#timezone-detected,
+#timezone-preview {
+    color: #555555;
+    font-size: 11px;
+}
+
+#timezone select {
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 2px;
+    border: 1px solid #7f9db9;
+    background: #ffffff;
     font: inherit;
-    font-size: 1rem;
+}
+
+#timezone .buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+/* the start button looks pressed in while the time zone window is open */
+#start-button.pressed {
+    filter: brightness(0.85);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.45);
+}
+
+
+/****************************************** TASKBAR */
+
+/* the blue bar along the bottom */
+#taskbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 34px;
+    display: flex;
+    align-items: stretch;
+    background: linear-gradient(to bottom, #3168d5 0%, #4993e6 6%, #2157d7 30%, #2663e0 88%, #1941a5 100%);
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+}
+
+/* the green button on the left (opens the intro window again) */
+#start-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 22px 0 10px;
+    border: none;
+    border-radius: 0 14px 14px 0;
+    background: radial-gradient(ellipse at 50% 15%, #79d36b 0%, #3c9b33 55%, #2c7a24 100%);
+    box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    font: italic bold 18px Tahoma, sans-serif;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     cursor: pointer;
 }
 
-#intro button:hover {
-    background: #2f7cc2;
+#start-button:hover {
+    filter: brightness(1.1);
+}
+
+#start-button .icon {
+    width: 24px;
+    height: 17px;
+    fill: #ffffff;
+}
+
+/* the "Cloud Reading" tab, like an open window on the taskbar */
+#task {
+    align-self: center;
+    margin-left: 10px;
+    padding: 5px 12px;
+    min-width: 150px;
+    border-radius: 3px;
+    background: #1e52b7;
+    box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+/* the tray on the right: the reading count and the time */
+#tray {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 14px;
+    border-left: 1px solid #0b3c9c;
+    background: linear-gradient(to bottom, #0c59b9 0%, #139ee9 8%, #18b9f0 50%, #1288d6 90%, #0e6cc7 100%);
+    white-space: nowrap;
+}
+
+/* on a small screen there's no room for the count, so just show the time */
+@media (max-width: 560px) {
+    #task, #count {
+        display: none;
+    }
 }

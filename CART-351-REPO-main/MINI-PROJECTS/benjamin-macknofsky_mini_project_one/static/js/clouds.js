@@ -47,6 +47,11 @@ function setup() {
     scatterClouds(SKY_SEED);
     // small (far away) clouds first, so the big ones get drawn on top
     clouds.sort((a, b) => a.depth - b.depth);
+
+    // paint each cloud once (see paintCloud in section 5)
+    for (const cloud of clouds) {
+        paintCloud(cloud);
+    }
 }
 
 function draw() {
@@ -368,38 +373,87 @@ function updatePosition(cloud, seconds) {
 //*************************************************
 // 5. DRAWING A CLOUD
 
-function drawCloud(cloud, seconds) {
-    push();
-    translate(cloud.x, cloud.y);
-    scale(skyScale()); // smaller on small screens
-    noStroke();
+// to make the clouds really fluffy they need a LOT of soft circles and blur,
+// which is too slow to draw 60 times a second. so each cloud gets painted once
+// onto its own hidden picture (paintCloud), and then every frame we just move that picture around
 
-    // blurry edges so it looks fluffy and not like circles
-    drawingContext.shadowBlur = 26 * cloud.depth;
+const PAINT_SCALE = 1.25;  // paint them at the biggest size they'll ever be shown, so they stay sharp
+const PAINT_PAD = 50;      // extra room around the edges for the blur
 
-    // first: a light blue-grey layer a bit lower down, like a shadow underneath
-    drawingContext.shadowColor = "rgba(170, 195, 225, 0.8)";
-    fill(196, 214, 236);
+function paintCloud(cloud) {
+    const rand = seededRandom(cloud.id * 31 + 5);
+
+    // fluff: lots of little circles around the top and sides of every puff
+    // (not the bottom, real clouds are flatter underneath)
+    const fluff = [];
     for (const p of cloud.puffs) {
-        const r = p.r * breathe(p, seconds);
-        circle(p.x, p.y + 7 * cloud.depth, r * 2);
+        const count = Math.floor(between(rand, 5, 9));
+        for (let i = 0; i < count; i++) {
+            const angle = between(rand, Math.PI * 0.95, Math.PI * 2.05);
+            const r = p.r * between(rand, 0.32, 0.55);
+            fluff.push({ x: p.x + Math.cos(angle) * p.r * 0.78, y: p.y + Math.sin(angle) * p.r * 0.78, r: r });
+        }
+    }
+    const everything = cloud.puffs.concat(fluff);
+
+    // how big the picture needs to be
+    const w = Math.ceil((cloud.width + PAINT_PAD * 2) * PAINT_SCALE);
+    const h = Math.ceil((cloud.height + PAINT_PAD * 2) * PAINT_SCALE);
+    const g = createGraphics(w, h);
+    const ctx = g.drawingContext;
+    g.noStroke();
+    g.translate(w / 2, h / 2);
+    g.scale(PAINT_SCALE);
+
+    // 1. a soft blue-grey shadow, a bit lower down, for the underside
+    ctx.shadowBlur = 16;
+    ctx.shadowColor = "rgba(150, 175, 215, 0.7)";
+    g.fill(175, 195, 228);
+    for (const p of everything) g.circle(p.x, p.y + p.r * 0.3, p.r * 2);
+
+    // 2. the main cloud, white at the top fading to a soft blue at the bottom
+    const shade = ctx.createLinearGradient(0, -cloud.height / 2, 0, cloud.height / 2);
+    shade.addColorStop(0, "rgb(255, 255, 255)");
+    shade.addColorStop(0.55, "rgb(250, 252, 255)");
+    shade.addColorStop(1, "rgb(212, 226, 245)");
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = "rgba(255, 255, 255, 0.9)";
+    for (const p of everything) {
+        ctx.fillStyle = shade;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
     }
 
-    // then: the white cloud on top
+    // 3. bright highlights on the top left of the puffs, like the sun is hitting them
+    ctx.shadowBlur = 18;
+    ctx.shadowColor = "rgba(255, 255, 255, 1)";
+    g.fill(255, 255, 255, 90);
+    for (const p of cloud.puffs) g.circle(p.x - p.r * 0.25, p.y - p.r * 0.3, p.r * 0.9);
+
+    // 4. soften the whole thing with a blur so there are no hard circle edges
+    const soft = createGraphics(w, h);
+    soft.drawingContext.filter = "blur(3.5px)";
+    soft.image(g, 0, 0);
+    g.remove(); // don't need the sharp one anymore
+
+    cloud.picture = soft;
+}
+
+function drawCloud(cloud, seconds) {
+    const s = skyScale() / PAINT_SCALE;
+    // the whole cloud swells and shrinks a tiny bit so the sky feels alive
+    const swell = 1 + 0.015 * Math.sin(seconds * 0.4 + cloud.id * 2);
+    const w = cloud.picture.width * s * swell;
+    const h = cloud.picture.height * s * swell;
+
+    push();
     // the cloud you clicked glows yellow so you know which one you picked
     if (selectedCloud === cloud) {
-        drawingContext.shadowColor = "rgba(255, 236, 170, 1)";
-        drawingContext.shadowBlur = 40 * cloud.depth;
-    } else {
-        drawingContext.shadowColor = "rgba(255, 255, 255, 0.9)";
+        drawingContext.shadowColor = "rgba(255, 220, 120, 0.95)";
+        drawingContext.shadowBlur = 35;
     }
-    fill(255);
-    for (const p of cloud.puffs) {
-        const r = p.r * breathe(p, seconds);
-        circle(p.x, p.y, r * 2);
-    }
-
-    drawingContext.shadowBlur = 0;
+    image(cloud.picture, cloud.x - w / 2, cloud.y - h / 2, w, h);
     pop();
 }
 

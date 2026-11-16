@@ -111,7 +111,7 @@ function drawWhispers(seconds) {
 
     push();
     textAlign(CENTER, CENTER);
-    textFont("Roboto");
+    textFont("Tahoma");
     textStyle(ITALIC);
     noStroke();
 

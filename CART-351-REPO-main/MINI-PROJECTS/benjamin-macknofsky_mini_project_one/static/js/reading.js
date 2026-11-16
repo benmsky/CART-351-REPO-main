@@ -2,7 +2,7 @@
 // what happens when you click a cloud and say what you see
 //
 // sections:
-//   1. setup (+ the intro button)
+//   1. setup (+ the intro window)
 //   2. opening + closing the box
 //   3. sending a reading to the server (fetch POST)
 //   4. every frame: move the box + floating words
@@ -14,11 +14,26 @@
 const form = document.getElementById("reading");
 const input = document.getElementById("reading-input");
 const info = document.getElementById("reading-info");
+const intro = document.getElementById("intro");
 
-// the intro fades away when you click "look up"
+// the intro window closes with "Look up" or the X
 document.getElementById("intro-button").addEventListener("click", function () {
-    document.getElementById("intro").classList.add("gone");
+    intro.classList.add("gone");
 });
+document.getElementById("intro-close").addEventListener("click", function () {
+    intro.classList.add("gone");
+});
+
+// the desktop icon opens the intro window again
+document.getElementById("title").addEventListener("click", function () {
+    closeReading();
+    intro.classList.remove("gone");
+});
+
+// the X on the reading window closes it
+document.getElementById("reading-close").addEventListener("click", closeReading);
+
+// (the start button and the clock are in timezone.js)
 
 // words that float up after you submit
 let floaters = [];
@@ -105,7 +120,7 @@ function updateReading() {
 
     // keep the box just above the cloud it belongs to
     if (selectedCloud) {
-        const top = selectedCloud.y - (selectedCloud.width * 0.35 + 30) * s;
+        const top = selectedCloud.y - (selectedCloud.height / 2 + 16) * s;
         // don't let it go off the left or right side of the screen
         const half = form.offsetWidth / 2 + 12;
         form.style.left = constrain(selectedCloud.x, half, width - half) + "px";
@@ -115,7 +130,7 @@ function updateReading() {
     // floating words go up and fade out over 4 seconds
     push();
     textAlign(CENTER, CENTER);
-    textFont("Roboto");
+    textFont("Tahoma");
     textStyle(ITALIC);
     textSize(20);
     noStroke();

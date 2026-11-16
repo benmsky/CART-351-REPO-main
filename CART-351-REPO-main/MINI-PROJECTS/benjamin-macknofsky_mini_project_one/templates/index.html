@@ -3,9 +3,6 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
         <title>Cloud Reading</title>
     </head>
@@ -13,41 +10,98 @@
         <!-- the sky: p5.js draws the clouds on a canvas in here -->
         <div id="sky"></div>
 
-        <!-- the grass you're lying in, along the bottom of the screen -->
+        <!-- the green hill you're lying on, along the bottom of the screen -->
         <div id="grass"></div>
 
-        <!-- title in the corner + how many readings there are so far -->
-        <header id="title">
-            <h1>Cloud Reading</h1>
-            <p>what do you see?</p>
-            <p id="count"></p>
-        </header>
+        <!-- a desktop icon in the corner, clicking it opens the intro window again -->
+        <button id="title" type="button">
+            <svg class="icon" viewBox="0 0 48 34" aria-hidden="true">
+                <circle cx="15" cy="21" r="10" />
+                <circle cx="26" cy="14" r="12" />
+                <circle cx="36" cy="21" r="9" />
+                <rect x="8" y="20" width="34" height="11" rx="5" />
+            </svg>
+            <span>Cloud Reading</span>
+        </button>
 
-        <!-- the box that opens next to a cloud when you click it -->
-        <form id="reading" autocomplete="off">
-            <label for="reading-input">what do you see?</label>
-            <div class="row">
-                <input id="reading-input" type="text" maxlength="40" placeholder="a dog, a ship, my grandma...">
-                <button type="submit">tell the sky</button>
+        <!-- the window that opens next to a cloud when you click it -->
+        <form id="reading" class="xp-window" autocomplete="off">
+            <div class="title-bar">
+                <span>What do you see?</span>
+                <button id="reading-close" class="close" type="button" aria-label="Close">&times;</button>
             </div>
-            <!-- how many times this cloud has been read, and how many readings got pushed out -->
-            <p id="reading-info"></p>
+            <div class="window-body">
+                <label for="reading-input">Tell the sky what you see in this cloud:</label>
+                <div class="row">
+                    <input id="reading-input" type="text" maxlength="40" placeholder="a dog, a ship, my grandma...">
+                    <button class="xp-button" type="submit">Tell the sky</button>
+                </div>
+                <!-- how many times this cloud has been read, and how many readings got pushed out -->
+                <p id="reading-info"></p>
+            </div>
         </form>
 
-        <!-- intro screen, goes away when you click "look up" -->
+        <!-- intro window, goes away when you click "Look up" or the X -->
         <div id="intro">
-            <div class="card">
-                <h2>lie back and look up.</h2>
-                <p>click a cloud and tell the sky what you see in it.</p>
-                <p>everyone else's readings float around the clouds. the more people see the same thing, the louder it gets.</p>
-                <button id="intro-button">look up</button>
+            <div class="xp-window">
+                <div class="title-bar">
+                    <span>Cloud Reading</span>
+                    <button id="intro-close" class="close" type="button" aria-label="Close">&times;</button>
+                </div>
+                <div class="window-body">
+                    <h2>Lie back and look up.</h2>
+                    <p>Click a cloud and tell the sky what you see in it.</p>
+                    <p>Everyone else's readings float around the clouds. The more people see the same thing, the louder it gets.</p>
+                    <div class="buttons">
+                        <button id="intro-button" class="xp-button" type="button">Look up</button>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- time zone window, opens from the start button -->
+        <div id="timezone" class="xp-window">
+            <div class="title-bar">
+                <span>Time Zone</span>
+                <button id="timezone-close" class="close" type="button" aria-label="Close">&times;</button>
+            </div>
+            <div class="window-body">
+                <p>What time zone are you in?</p>
+                <p id="timezone-detected"></p>
+                <select id="timezone-select"></select>
+                <p id="timezone-preview"></p>
+                <div class="buttons">
+                    <button id="timezone-ok" class="xp-button" type="button">OK</button>
+                    <button id="timezone-cancel" class="xp-button" type="button">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- the taskbar along the bottom -->
+        <footer id="taskbar">
+            <!-- the green start button opens the time zone window (in timezone.js) -->
+            <button id="start-button" type="button">
+                <svg class="icon" viewBox="0 0 48 34" aria-hidden="true">
+                    <circle cx="15" cy="21" r="10" />
+                    <circle cx="26" cy="14" r="12" />
+                    <circle cx="36" cy="21" r="9" />
+                    <rect x="8" y="20" width="34" height="11" rx="5" />
+                </svg>
+                start
+            </button>
+            <div id="task">Cloud Reading</div>
+            <!-- the tray: how many readings so far, and the time (in whatever time zone you picked) -->
+            <div id="tray">
+                <span id="count"></span>
+                <span id="clock"></span>
+            </div>
+        </footer>
 
         <!-- p5.js library, then my scripts -->
         <script src="https://cdn.jsdelivr.net/npm/p5@1.11.1/lib/p5.min.js"></script>
         <script src="{{ url_for('static', filename='js/clouds.js') }}"></script>
         <script src="{{ url_for('static', filename='js/reading.js') }}"></script>
         <script src="{{ url_for('static', filename='js/whispers.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/timezone.js') }}"></script>
     </body>
 </html>
