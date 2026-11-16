@@ -8,7 +8,7 @@
 //   4. every frame: move the box + floating words
 
 
-//*************************************************
+//**
 // 1. SETUP
 
 const form = document.getElementById("reading");
@@ -39,7 +39,7 @@ document.getElementById("reading-close").addEventListener("click", closeReading)
 let floaters = [];
 
 
-//*************************************************
+//**
 // 2. OPENING + CLOSING THE BOX
 
 // clouds.js calls this when the sky is clicked
@@ -71,7 +71,7 @@ document.addEventListener("keydown", function (event) {
 });
 
 
-//*************************************************
+//**
 // 3. SENDING A READING TO THE SERVER (fetch POST)
 
 form.addEventListener("submit", async function (event) {
@@ -111,7 +111,7 @@ form.addEventListener("submit", async function (event) {
 });
 
 
-//*************************************************
+//**
 // 4. EVERY FRAME: MOVE THE BOX + FLOATING WORDS
 // draw() in clouds.js calls this
 

@@ -9,7 +9,7 @@
 //   4. filling in the list
 
 
-//*************************************************
+//**
 // 1. SETUP + THE LIST OF TIME ZONES
 
 const tzWindow = document.getElementById("timezone");
@@ -50,7 +50,7 @@ const ZONES = [
 let shownZone = localStorage.getItem("cloudReadingZone") || MY_ZONE;
 
 
-//*************************************************
+//**
 // 2. THE CLOCK
 
 // the time in a time zone, like "3:07 PM"
@@ -75,7 +75,7 @@ updateClock();
 setInterval(updateClock, 10000);
 
 
-//*************************************************
+//**
 // 3. OPENING + CLOSING THE WINDOW
 
 function openTimezone() {
@@ -118,7 +118,7 @@ function showPreview() {
 }
 
 
-//*************************************************
+//**
 // 4. FILLING IN THE LIST
 
 function fillZones() {

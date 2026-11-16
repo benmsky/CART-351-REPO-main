@@ -3,7 +3,7 @@
    sections: page, sky + hill, desktop icon, xp windows, reading window, intro window, time zone window, taskbar */
 
 
-/****************************************** PAGE */
+/** PAGE */
 
 * {
     box-sizing: border-box;
@@ -23,7 +23,7 @@ body {
 }
 
 
-/****************************************** SKY + HILL */
+/** SKY + HILL */
 
 /* the p5 canvas goes in here */
 #sky {
@@ -44,7 +44,7 @@ body {
 }
 
 
-/****************************************** DESKTOP ICON */
+/** DESKTOP ICON */
 
 /* top left corner, like a shortcut on the desktop */
 #title {
@@ -83,7 +83,7 @@ body {
 }
 
 
-/****************************************** XP WINDOWS */
+/** XP WINDOWS */
 /* the shared look for the reading window and the intro window */
 
 .xp-window {
@@ -154,7 +154,7 @@ body {
 }
 
 
-/****************************************** READING WINDOW */
+/** READING WINDOW */
 
 /* hidden until you click a cloud (reading.js adds the "open" class) */
 #reading {
@@ -198,7 +198,7 @@ body {
 }
 
 
-/****************************************** INTRO WINDOW */
+/** INTRO WINDOW */
 
 /* covers the sky until you click "Look up" (so you can't click clouds behind it) */
 #intro {
@@ -237,7 +237,7 @@ body {
 }
 
 
-/****************************************** TIME ZONE WINDOW */
+/** TIME ZONE WINDOW */
 
 /* pops up above the start button, like a start menu (reading.js adds "open") */
 #timezone {
@@ -285,7 +285,7 @@ body {
 }
 
 
-/****************************************** TASKBAR */
+/** TASKBAR */
 
 /* the blue bar along the bottom */
 #taskbar {

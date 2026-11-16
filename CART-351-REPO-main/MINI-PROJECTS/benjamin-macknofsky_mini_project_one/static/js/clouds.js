@@ -11,7 +11,7 @@
 //   7. little helpers
 
 
-//*************************************************
+//**
 // 1. SETTINGS
 
 const NUM_CLOUDS = 7;   // how many clouds (has to match NUM_CLOUDS in app.py)
@@ -28,7 +28,7 @@ let clouds = [];
 let selectedCloud = null; // the cloud someone clicked on (used in reading.js)
 
 
-//*************************************************
+//**
 // 2. SETUP + DRAW
 
 function setup() {
@@ -79,7 +79,7 @@ function windowResized() {
 }
 
 
-//*************************************************
+//**
 // 3. MAKING A CLOUD
 // a cloud is just a bunch of circles ("puffs") squished together
 // the id is used as the seed, so cloud 3 is always the same shape for everyone
@@ -192,7 +192,7 @@ function makeCloud(id) {
 }
 
 
-//*************************************************
+//**
 // 3b. SCATTERING THE CLOUDS
 // every cloud gets a random height, speed and starting spot
 // the only rule: if two clouds are at the same height, they have to drift at the same speed,
@@ -357,7 +357,7 @@ function addLumps(puffs, rand, minCount, maxCount) {
 }
 
 
-//*************************************************
+//**
 // 4. MOVING A CLOUD
 // works out where the cloud should be right now, based on the clock
 
@@ -370,7 +370,7 @@ function updatePosition(cloud, seconds) {
 }
 
 
-//*************************************************
+//**
 // 5. DRAWING A CLOUD
 
 // to make the clouds really fluffy they need a LOT of soft circles and blur,
@@ -458,7 +458,7 @@ function drawCloud(cloud, seconds) {
 }
 
 
-//*************************************************
+//**
 // 6. CLICKING A CLOUD
 // gives back the cloud under the mouse, or null if it's just sky
 // checks the front clouds first since they're on top
@@ -482,7 +482,7 @@ function cloudAt(mx, my) {
 }
 
 
-//*************************************************
+//**
 // 7. LITTLE HELPERS
 
 // cloud size based on the screen: full size on a big screen, smaller on a small one

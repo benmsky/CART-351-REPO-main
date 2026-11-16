@@ -8,7 +8,7 @@
 //   4. drawing the whispers
 
 
-//*************************************************
+//**
 // 1. SETUP
 
 const WHISPERS_PER_CLOUD = 6;   // only show the most common ones so it doesn't get messy
@@ -18,7 +18,7 @@ const CHECK_EVERY = 10;         // how often (in seconds) to check for new readi
 let allReadings = {};
 
 
-//*************************************************
+//**
 // 2. GETTING EVERYONE'S READINGS (fetch GET)
 
 async function loadReadings() {
@@ -60,7 +60,7 @@ function updateCount() {
 }
 
 
-//*************************************************
+//**
 // 3. COUNTING THE READINGS
 // "a dog", "A Dog" and "a dog " all count as the same thing
 
@@ -102,7 +102,7 @@ function cloudInfo(cloudId) {
 }
 
 
-//*************************************************
+//**
 // 4. DRAWING THE WHISPERS
 // draw() in clouds.js calls this every frame
 
