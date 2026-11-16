@@ -159,7 +159,7 @@ body {
 /* hidden until you click a cloud (reading.js adds the "open" class) */
 #reading {
     position: fixed;
-    transform: translate(-50%, -100%); /* sits centred above the cloud */
+    transform: translateX(-50%); /* centred on the cloud (reading.js puts it above or below) */
     display: none;
 }
 

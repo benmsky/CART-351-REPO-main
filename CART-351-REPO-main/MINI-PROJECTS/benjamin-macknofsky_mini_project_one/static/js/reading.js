@@ -114,13 +114,24 @@ form.addEventListener("submit", async function (event) {
 function updateReading() {
     const s = skyScale();
 
-    // keep the box just above the cloud it belongs to
+    // keep the box next to the cloud it belongs to
     if (selectedCloud) {
-        const top = selectedCloud.y - (selectedCloud.height / 2 + 16) * s;
+        const cloudTop = selectedCloud.y - (selectedCloud.height / 2 + 16) * s;
+        const cloudBottom = selectedCloud.y + (selectedCloud.height / 2 + 16) * s;
+        const boxHeight = form.offsetHeight;
+
         // don't let it go off the left or right side of the screen
         const half = form.offsetWidth / 2 + 12;
         form.style.left = constrain(selectedCloud.x, half, width - half) + "px";
-        form.style.top = Math.max(top, 20) + "px";
+
+        if (cloudTop - boxHeight > 10) {
+            // there's room above the cloud: put it there
+            form.style.top = (cloudTop - boxHeight) + "px";
+        } else {
+            // the cloud is too high up: put the box under the cloud instead
+            // (but never down behind the taskbar)
+            form.style.top = Math.min(cloudBottom, height - 44 - boxHeight) + "px";
+        }
     }
 
     // floating words go up and fade out over 4 seconds

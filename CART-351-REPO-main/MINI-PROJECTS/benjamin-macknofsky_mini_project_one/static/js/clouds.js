@@ -1,15 +1,4 @@
 // CLOUD READING - clouds.js
-// draws the sky and the clouds with p5.js
-//
-// sections:
-//   1. settings
-//   2. setup + draw (p5 runs these)
-//   3. making a cloud (+ 3b. scattering them around the sky)
-//   4. moving a cloud
-//   5. drawing a cloud
-//   6. clicking a cloud
-//   7. little helpers
-
 
 // 1. SETTINGS
 
@@ -78,17 +67,6 @@ function windowResized() {
 
 
 // 3. MAKING A CLOUD
-// a cloud is just a bunch of circles ("puffs") squished together
-// the id is used as the seed, so cloud 3 is always the same shape for everyone
-//
-// there are 6 kinds of cloud so the sky has a real mix:
-//   big       - a huge billowy one
-//   long      - a long thin streak
-//   tower     - tall and stacked up
-//   creature  - a lumpy body with "limbs" (could be a neck, tail, ear, arm... or nothing)
-//   scattered - a few chunky clumps broken apart
-// all random, so they kind of look like something but never one thing. people fill in the rest
-
 // which kind each cloud is (cloud 0 is a creature, cloud 1 is big, etc.)
 const KINDS = ["creature", "big", "long", "tower", "creature", "scattered", "big"];
 
@@ -190,10 +168,6 @@ function makeCloud(id) {
 
 
 // 3b. SCATTERING THE CLOUDS
-// every cloud gets a random height, speed and starting spot
-// the only rule: if two clouds are at the same height, they have to drift at the same speed,
-// otherwise the faster one would catch up and crash into the other one.
-// clouds at different heights can have whatever speed they want
 
 // a cloud's height and width as fractions of the sky
 // (the numbers are safe guesses that work on small and big screens, see skyScale())
@@ -366,10 +340,6 @@ function updatePosition(cloud, seconds) {
 
 
 // 5. DRAWING A CLOUD
-
-// to make the clouds really fluffy they need a LOT of soft circles and blur,
-// which is too slow to draw 60 times a second. so each cloud gets painted once
-// onto its own hidden picture (paintCloud), and then every frame we just move that picture around
 
 const PAINT_SCALE = 1.25;  // paint them at the biggest size they'll ever be shown, so they stay sharp
 const PAINT_PAD = 50;      // extra room around the edges for the blur
