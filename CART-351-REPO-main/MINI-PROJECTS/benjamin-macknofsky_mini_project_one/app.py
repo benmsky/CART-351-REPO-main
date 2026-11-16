@@ -1,8 +1,6 @@
-#*************************************************
 # CLOUD READING - CART 351 Mini-Project One
 # people click a cloud and say what they see in it
 # every reading gets saved in data/guesses.json
-#*************************************************
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
 import json
@@ -25,7 +23,6 @@ MAX_LENGTH = 40
 file_lock = threading.Lock()
 
 
-#*************************************************
 # JSON HELPERS
 # the file looks like this (cloud number -> list of readings):
 # { "3": [ {"text": "a dog", "time": "2026-11-14T15:02:11"} ], "5": [...] }
@@ -47,14 +44,12 @@ def save_guesses(guesses):
         json.dump(guesses, f, indent=2, ensure_ascii=False)
 
 
-#*************************************************
 # the default route (the sky page)
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
-#*************************************************
 # FETCH POST: the page sends a reading here
 # it looks like {"cloud": 3, "guess": "a dog"}
 @app.route("/api/guess", methods=["POST"])
@@ -89,7 +84,6 @@ def add_guess():
     return jsonify({"cloud": cloud, "readings": readings_for_cloud})
 
 
-#*************************************************
 # FETCH GET: the page asks for everyone's readings here
 # sends back the whole json file
 @app.route("/api/guesses")
@@ -99,6 +93,8 @@ def get_guesses():
     return jsonify(guesses)
 
 
-#*************************************************
 #run
-app.run(debug=True)
+# this only runs when I start it on my laptop (python app.py)
+# online, PythonAnywhere starts the app its own way and skips this part
+if __name__ == "__main__":
+    app.run(debug=True)

@@ -97,8 +97,8 @@
             </div>
         </footer>
 
-        <!-- p5.js library, then my scripts -->
-        <script src="https://cdn.jsdelivr.net/npm/p5@1.11.1/lib/p5.min.js"></script>
+        <!-- p5.js library (saved in the project so it works without wifi), then my scripts -->
+        <script src="{{ url_for('static', filename='js/p5.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/clouds.js') }}"></script>
         <script src="{{ url_for('static', filename='js/reading.js') }}"></script>
         <script src="{{ url_for('static', filename='js/whispers.js') }}"></script>
