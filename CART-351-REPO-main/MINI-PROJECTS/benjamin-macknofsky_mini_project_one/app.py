@@ -1,6 +1,5 @@
 # CLOUD READING - CART 351 Mini-Project One
-# people click a cloud and say what they see in it
-# every reading gets saved in data/guesses.json
+# the flask side. saves what people see in the clouds and hands it back
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
 import json
@@ -9,26 +8,25 @@ import threading
 
 app = Flask(__name__)
 
-# the json file where all the readings go
+# where all the readings get saved
 DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "guesses.json")
 
-# how many clouds there are (has to match NUM_CLOUDS in clouds.js)
+# 7 clouds, has to match clouds.js or stuff breaks
 NUM_CLOUDS = 7
 
-# longest a reading can be
+# 40 letters max, that's plenty for a cloud
 MAX_LENGTH = 40
 
-# makes sure only one person saves at a time,
-# so two people saving at once don't erase each other
+# so two people saving at the same time don't wipe each other out
 file_lock = threading.Lock()
 
 
 # JSON HELPERS
-# the file looks like this (cloud number -> list of readings):
+# the file looks like this, writing it down so I don't forget:
 # { "3": [ {"text": "a dog", "time": "2026-11-14T15:02:11"} ], "5": [...] }
 
 def load_guesses():
-    # no file or empty file -> start with nothing
+    # no file or it's empty, just start fresh
     if not os.path.exists(DATA_FILE):
         return {}
     with open(DATA_FILE, "r", encoding="utf-8") as f:
@@ -44,24 +42,24 @@ def save_guesses(guesses):
         json.dump(guesses, f, indent=2, ensure_ascii=False)
 
 
-# the default route (the sky page)
+# main page
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
-# FETCH POST: the page sends a reading here
-# it looks like {"cloud": 3, "guess": "a dog"}
+# FETCH POST: someone saw something, it comes in here
+# looks like {"cloud": 3, "guess": "a dog"}
 @app.route("/api/guess", methods=["POST"])
 def add_guess():
     data = request.get_json(silent=True) or {}
 
-    # check the cloud number is real (0 to 6)
+    # make sure it's a real cloud (0 to 6)
     cloud = data.get("cloud")
     if not isinstance(cloud, int) or cloud < 0 or cloud >= NUM_CLOUDS:
         return jsonify({"error": "that cloud doesn't exist"}), 400
 
-    # clean up extra spaces, can't be empty, cut it off if it's too long
+    # clean it up, no empty ones, cut it off if it's too long
     guess = " ".join(str(data.get("guess", "")).split())
     if guess == "":
         return jsonify({"error": "you have to see something"}), 400
@@ -72,20 +70,18 @@ def add_guess():
         "time": datetime.now().isoformat(timespec="seconds")
     }
 
-    # open the file, add the reading, save it
-    # (json keys have to be strings, so cloud 3 is saved as "3")
+    # add it and save. json wants the key as "3" not 3, kinda annoying but ok
     with file_lock:
         guesses = load_guesses()
         guesses.setdefault(str(cloud), []).append(reading)
         save_guesses(guesses)
         readings_for_cloud = guesses[str(cloud)]
 
-    # send back all the readings for that cloud
+    # send back everything people said about that cloud
     return jsonify({"cloud": cloud, "readings": readings_for_cloud})
 
 
-# FETCH GET: the page asks for everyone's readings here
-# sends back the whole json file
+# FETCH GET: the page wants all the readings
 @app.route("/api/guesses")
 def get_guesses():
     with file_lock:
@@ -94,7 +90,6 @@ def get_guesses():
 
 
 #run
-# this only runs when I start it on my laptop (python app.py)
-# online, PythonAnywhere starts the app its own way and skips this part
+# only runs on my laptop, pythonanywhere starts it its own way
 if __name__ == "__main__":
     app.run(debug=True)

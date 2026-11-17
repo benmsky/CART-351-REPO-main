@@ -1,5 +1,5 @@
 // CLOUD READING - reading.js
-// what happens when you click a cloud and say what you see
+// clicking a cloud and saying what you see
 //
 // sections:
 //   1. setup (+ the intro window)
@@ -15,7 +15,7 @@ const input = document.getElementById("reading-input");
 const info = document.getElementById("reading-info");
 const intro = document.getElementById("intro");
 
-// the intro window closes with "Look up" or the X
+// look up or the X, either one closes the intro
 document.getElementById("intro-button").addEventListener("click", function () {
     intro.classList.add("gone");
 });
@@ -23,24 +23,24 @@ document.getElementById("intro-close").addEventListener("click", function () {
     intro.classList.add("gone");
 });
 
-// the desktop icon opens the intro window again
+// desktop icon brings the intro back
 document.getElementById("title").addEventListener("click", function () {
     closeReading();
     intro.classList.remove("gone");
 });
 
-// the X on the reading window closes it
+// X on the reading box
 document.getElementById("reading-close").addEventListener("click", closeReading);
 
-// (the start button and the clock are in timezone.js)
+// (start button + clock are in timezone.js now)
 
-// words that float up after you submit
+// words that float up after you send one
 let floaters = [];
 
 
 // 2. OPENING + CLOSING THE BOX
 
-// clouds.js calls this when the sky is clicked
+// clouds.js calls this when the sky gets clicked
 function skyClicked(x, y) {
     const cloud = cloudAt(x, y);
     if (cloud) {
@@ -53,7 +53,7 @@ function skyClicked(x, y) {
 function openReading(cloud) {
     selectedCloud = cloud;
     input.value = "";
-    info.textContent = cloudInfo(cloud.id); // "read 5 times" etc. (in whispers.js)
+    info.textContent = cloudInfo(cloud.id); // the "read 5 times" line, from whispers.js
     form.classList.add("open");
     input.focus();
 }
@@ -72,7 +72,7 @@ document.addEventListener("keydown", function (event) {
 // 3. SENDING A READING TO THE SERVER (fetch POST)
 
 form.addEventListener("submit", async function (event) {
-    event.preventDefault(); // stop the page from reloading
+    event.preventDefault(); // don't let the page reload
 
     const guess = input.value.trim();
     if (guess === "" || !selectedCloud) return;
@@ -81,7 +81,7 @@ form.addEventListener("submit", async function (event) {
     closeReading();
 
     try {
-        // send the cloud number + what they saw to /api/guess in app.py
+        // send it to /api/guess in app.py
         const response = await fetch("/api/guess", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -89,7 +89,7 @@ form.addEventListener("submit", async function (event) {
         });
         const result = await response.json();
 
-        // the server said no (empty guess, wrong cloud, etc.)
+        // server said no
         if (!response.ok) {
             console.log("couldn't save that reading:", result.error);
             return;
@@ -97,10 +97,10 @@ form.addEventListener("submit", async function (event) {
 
         console.log("cloud " + result.cloud + " has been read " + result.readings.length + " time(s)");
 
-        // add it to the whispers right away (in whispers.js)
+        // show it in the whispers right away instead of waiting
         readingsUpdated(result.cloud, result.readings);
 
-        // float their words up off the cloud
+        // float the words up off the cloud
         floaters.push({ text: guess, cloud: cloud, age: 0 });
     } catch (error) {
         console.log("couldn't reach the server:", error);
@@ -109,32 +109,32 @@ form.addEventListener("submit", async function (event) {
 
 
 // 4. EVERY FRAME: MOVE THE BOX + FLOATING WORDS
-// draw() in clouds.js calls this
+// draw() in clouds.js runs this every frame
 
 function updateReading() {
     const s = skyScale();
 
-    // keep the box next to the cloud it belongs to
+    // box sticks with its cloud
     if (selectedCloud) {
         const cloudTop = selectedCloud.y - (selectedCloud.height / 2 + 16) * s;
         const cloudBottom = selectedCloud.y + (selectedCloud.height / 2 + 16) * s;
         const boxHeight = form.offsetHeight;
 
-        // don't let it go off the left or right side of the screen
+        // keep it from going off the sides
         const half = form.offsetWidth / 2 + 12;
         form.style.left = constrain(selectedCloud.x, half, width - half) + "px";
 
         if (cloudTop - boxHeight > 10) {
-            // there's room above the cloud: put it there
+            // room above, so it goes above
             form.style.top = (cloudTop - boxHeight) + "px";
         } else {
-            // the cloud is too high up: put the box under the cloud instead
-            // (but never down behind the taskbar)
+            // cloud's too high, so it goes under instead
+            // (but not behind the taskbar)
             form.style.top = Math.min(cloudBottom, height - 44 - boxHeight) + "px";
         }
     }
 
-    // floating words go up and fade out over 4 seconds
+    // words float up and fade out in like 4 seconds
     push();
     textAlign(CENTER, CENTER);
     textFont("Tahoma");
@@ -150,6 +150,6 @@ function updateReading() {
         text(f.text, f.cloud.x, f.cloud.y - 20 - f.age * 30);
     }
     pop();
-    // get rid of the ones that faded out
+    // clear out the ones that are done
     floaters = floaters.filter(f => f.age < 4);
 }

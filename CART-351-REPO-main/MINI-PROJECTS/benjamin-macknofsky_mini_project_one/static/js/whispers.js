@@ -1,5 +1,5 @@
 // CLOUD READING - whispers.js
-// shows everyone's readings floating faintly around each cloud
+// everyone's readings floating around the clouds
 //
 // sections:
 //   1. setup
@@ -10,10 +10,10 @@
 
 // 1. SETUP
 
-const WHISPERS_PER_CLOUD = 6;   // only show the most common ones so it doesn't get messy
-const CHECK_EVERY = 10;         // how often (in seconds) to check for new readings
+const WHISPERS_PER_CLOUD = 6;   // only the top 6, any more and it gets messy
+const CHECK_EVERY = 10;         // check for new ones every 10 seconds
 
-// all the readings, same as guesses.json: { "3": [ {text, time}, ... ], ... }
+// my copy of guesses.json
 let allReadings = {};
 
 
@@ -21,7 +21,7 @@ let allReadings = {};
 
 async function loadReadings() {
     try {
-        // ask /api/guesses in app.py for the whole json file
+        // grab everything from /api/guesses in app.py
         const response = await fetch("/api/guesses");
         allReadings = await response.json();
         updateCount();
@@ -30,18 +30,17 @@ async function loadReadings() {
     }
 }
 
-// get them once when the page loads, then keep checking
-// so you can see other people's readings show up while you're on the page
+// once on load, then every 10 seconds so new ones pop up while you're on the page
 loadReadings();
 setInterval(loadReadings, CHECK_EVERY * 1000);
 
-// reading.js calls this after you submit, so your reading shows up right away
+// reading.js calls this after someone sends one
 function readingsUpdated(cloudId, readings) {
     allReadings[cloudId] = readings;
     updateCount();
 }
 
-// the total number of readings under the title
+// the count in the tray
 function updateCount() {
     let total = 0;
     for (const id in allReadings) {
@@ -61,12 +60,12 @@ function updateCount() {
 // 3. COUNTING THE READINGS
 // "a dog", "A Dog" and "a dog " all count as the same thing
 
-// the most common readings for a cloud (only these get drawn)
+// only the top ones get shown
 function topReadings(cloudId) {
     return countReadings(cloudId).slice(0, WHISPERS_PER_CLOUD);
 }
 
-// every different reading for a cloud + how many times it was said, most common first
+// count them up, most said first
 function countReadings(cloudId) {
     const readings = allReadings[cloudId] || [];
     const counts = {};
@@ -82,8 +81,8 @@ function countReadings(cloudId) {
     return Object.values(counts).sort((a, b) => b.count - a.count);
 }
 
-// the line in the reading box, like "read 12 times · 3 readings drowned out"
-// (only the top few readings get shown, so the less popular ones get pushed out)
+// "read 12 times · 3 readings drowned out"
+// the drowned out ones are still saved, they just don't show up
 function cloudInfo(cloudId) {
     const total = (allReadings[cloudId] || []).length;
     const different = countReadings(cloudId);
@@ -100,7 +99,7 @@ function cloudInfo(cloudId) {
 
 
 // 4. DRAWING THE WHISPERS
-// draw() in clouds.js calls this every frame
+// clouds.js calls this every frame
 
 function drawWhispers(seconds) {
     const s = skyScale();
@@ -116,31 +115,30 @@ function drawWhispers(seconds) {
         if (top.length === 0) continue;
 
         const most = top[0].count;
-        // whispers get stronger when you hover or click the cloud
+        // whispers get louder when you hover or click the cloud
         const looking = (selectedCloud === cloud || cloudAt(mouseX, mouseY) === cloud);
 
-        // put the words in an order based on the words themselves,
-        // so everyone sees them in the same spots
+        // sort by the words so they land in the same spot for everyone
         const placed = top.slice().sort((a, b) => textToNumber(a.text) - textToNumber(b.text));
 
-        // an invisible oval just outside the cloud, the words sit on it
+        // invisible ring around the cloud, the words sit on it
         const ovalW = cloud.width / 2 * s + 30;
         const ovalH = cloud.height / 2 * s + 22;
-        const startAngle = cloud.id * 1.3; // each cloud starts at a different spot
+        const startAngle = cloud.id * 1.3; // each cloud starts the ring somewhere different
 
         for (let i = 0; i < placed.length; i++) {
             const w = placed[i];
 
-            // more people said it = bigger and easier to see
+            // more people said it = bigger and darker
             const strength = w.count / most;
             const size = (14 + 8 * strength) * s;
             let alpha = 70 + 110 * strength;
             if (looking) alpha = min(alpha + 70, 240);
 
-            // spread the words out evenly around the oval so they don't overlap
+            // spread them out evenly so they don't overlap
             const angle = startAngle + (i / placed.length) * Math.PI * 2;
             const x = cloud.x + Math.cos(angle) * ovalW;
-            // + a little bob up and down
+            // little bob up and down
             const y = cloud.y + Math.sin(angle) * ovalH + Math.sin(seconds * 0.8 + i * 2) * 3;
 
             textSize(size);
@@ -152,7 +150,7 @@ function drawWhispers(seconds) {
     pop();
 }
 
-// turns a word into a number (used as a seed for where the word goes)
+// turns a word into a number so I can sort by it
 function textToNumber(str) {
     let n = 0;
     for (let i = 0; i < str.length; i++) {

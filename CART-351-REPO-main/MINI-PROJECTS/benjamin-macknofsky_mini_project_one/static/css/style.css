@@ -1,5 +1,5 @@
 /* CLOUD READING - style.css
-   the look is inspired by windows xp: blue title bars, beige windows, a taskbar and a green hill
+   going for a windows xp look. blue title bars, beige windows, taskbar, the hill
    sections: page, sky + hill, desktop icon, xp windows, reading window, intro window, time zone window, taskbar */
 
 
@@ -17,7 +17,7 @@ html, body {
     font-size: 13px;
 }
 
-/* the daytime sky: deep blue at the top, pale near the hill */
+/* the sky, dark blue up top and lighter by the hill */
 body {
     background: linear-gradient(to bottom, #1d6ad6 0%, #4a92ea 40%, #8ec0f5 75%, #c9e2fb 100%);
 }
@@ -25,28 +25,28 @@ body {
 
 /* SKY + HILL */
 
-/* the p5 canvas goes in here */
+/* p5 canvas goes in here */
 #sky {
     position: fixed;
     inset: 0;
 }
 
-/* a big rounded green hill, like you're lying on it looking up */
+/* the hill, like you're lying on it looking up */
 #grass {
     position: fixed;
     left: -15%;
     width: 130%;
     bottom: 0;
     height: 140px;
-    border-radius: 50% 50% 0 0 / 100% 100% 0 0; /* makes the top round */
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0; /* rounds the top */
     background: radial-gradient(ellipse at 50% 0%, #93d556 0%, #62ad2f 35%, #3f8c1d 75%, #2f7414 100%);
-    pointer-events: none; /* lets clicks go through to the clouds */
+    pointer-events: none; /* clicks go through it to the clouds */
 }
 
 
 /* DESKTOP ICON */
 
-/* top left corner, like a shortcut on the desktop */
+/* little desktop shortcut in the corner */
 #title {
     position: fixed;
     top: 18px;
@@ -70,12 +70,12 @@ body {
     filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.35));
 }
 
-/* the label under the icon, with the dark shadow xp desktop icons have */
+/* that dark shadow xp icons always had */
 #title span {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.85);
 }
 
-/* when you hover or click it, it gets the blue selected look */
+/* goes blue when you hover it */
 #title:hover span,
 #title:focus span {
     background: #316ac5;
@@ -84,7 +84,7 @@ body {
 
 
 /* XP WINDOWS */
-/* the shared look for the reading window and the intro window */
+/* same look for all the windows */
 
 .xp-window {
     border: 3px solid #0831d9;
@@ -95,12 +95,12 @@ body {
     color: #000000;
 }
 
-/* the blue bar along the top with the title and the X */
+/* the blue bar on top */
 .xp-window .title-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 0 -3px; /* goes over the window border so it reaches the edges */
+    margin: 0 -3px; /* stretches over the border so it reaches the edges */
     padding: 3px 5px 3px 8px;
     border-radius: 8px 8px 0 0;
     background: linear-gradient(to bottom, #0997ff 0%, #0053ee 8%, #0050ee 40%, #0066ff 88%, #005bff 95%, #003dd7 100%);
@@ -109,7 +109,7 @@ body {
     text-shadow: 1px 1px #0f1089;
 }
 
-/* the red X button */
+/* the red X */
 .xp-window .close {
     width: 21px;
     height: 21px;
@@ -130,7 +130,7 @@ body {
     padding: 12px;
 }
 
-/* the grey-white xp button */
+/* the grey xp button */
 .xp-button {
     min-width: 75px;
     padding: 4px 12px;
@@ -143,7 +143,7 @@ body {
     cursor: pointer;
 }
 
-/* xp buttons get an orange glow when you hover */
+/* orange glow on hover like xp */
 .xp-button:hover {
     box-shadow: inset 0 0 0 2px #f8b636;
 }
@@ -156,10 +156,10 @@ body {
 
 /* READING WINDOW */
 
-/* hidden until you click a cloud (reading.js adds the "open" class) */
+/* hidden until you click a cloud */
 #reading {
     position: fixed;
-    transform: translateX(-50%); /* centred on the cloud (reading.js puts it above or below) */
+    transform: translateX(-50%); /* centred on the cloud, reading.js puts it above or under */
     display: none;
 }
 
@@ -186,7 +186,7 @@ body {
     outline: none;
 }
 
-/* the little line under the box, like "read 5 times" */
+/* the "read 5 times" line */
 #reading-info {
     margin: 8px 0 0;
     color: #555555;
@@ -200,7 +200,7 @@ body {
 
 /* INTRO WINDOW */
 
-/* covers the sky until you click "Look up" (so you can't click clouds behind it) */
+/* covers the sky until you click Look up */
 #intro {
     position: fixed;
     inset: 0;
@@ -210,7 +210,7 @@ body {
     transition: opacity 0.4s;
 }
 
-/* reading.js adds this when you close it, so it fades away */
+/* fades out when you close it */
 #intro.gone {
     opacity: 0;
     pointer-events: none;
@@ -239,7 +239,7 @@ body {
 
 /* TIME ZONE WINDOW */
 
-/* pops up above the start button, like a start menu (reading.js adds "open") */
+/* pops up over the start button like a start menu */
 #timezone {
     position: fixed;
     left: 6px;
@@ -278,7 +278,7 @@ body {
     margin-top: 4px;
 }
 
-/* the start button looks pressed in while the time zone window is open */
+/* start button stays pressed in while it's open */
 #start-button.pressed {
     filter: brightness(0.85);
     box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.45);
@@ -287,7 +287,7 @@ body {
 
 /* TASKBAR */
 
-/* the blue bar along the bottom */
+/* the taskbar */
 #taskbar {
     position: fixed;
     left: 0;
@@ -301,7 +301,7 @@ body {
     color: #ffffff;
 }
 
-/* the green button on the left (opens the intro window again) */
+/* the green start button */
 #start-button {
     display: flex;
     align-items: center;
@@ -327,7 +327,7 @@ body {
     fill: #ffffff;
 }
 
-/* the "Cloud Reading" tab, like an open window on the taskbar */
+/* fake open window tab, just for the look */
 #task {
     align-self: center;
     margin-left: 10px;
@@ -338,7 +338,7 @@ body {
     box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.45);
 }
 
-/* the tray on the right: the reading count and the time */
+/* the tray, count and clock */
 #tray {
     margin-left: auto;
     display: flex;
@@ -350,7 +350,7 @@ body {
     white-space: nowrap;
 }
 
-/* on a small screen there's no room for the count, so just show the time */
+/* small screen, hide the count and just keep the clock */
 @media (max-width: 560px) {
     #task, #count {
         display: none;

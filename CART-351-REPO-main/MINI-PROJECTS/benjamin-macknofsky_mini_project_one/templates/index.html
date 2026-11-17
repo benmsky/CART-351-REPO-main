@@ -7,13 +7,13 @@
         <title>Cloud Reading</title>
     </head>
     <body>
-        <!-- the sky: p5.js draws the clouds on a canvas in here -->
+        <!-- the sky, p5 draws the clouds in here -->
         <div id="sky"></div>
 
-        <!-- the green hill you're lying on, along the bottom of the screen -->
+        <!-- the hill -->
         <div id="grass"></div>
 
-        <!-- a desktop icon in the corner, clicking it opens the intro window again -->
+        <!-- desktop icon, brings the intro back -->
         <button id="title" type="button">
             <svg class="icon" viewBox="0 0 48 34" aria-hidden="true">
                 <circle cx="15" cy="21" r="10" />
@@ -24,7 +24,7 @@
             <span>Cloud Reading</span>
         </button>
 
-        <!-- the window that opens next to a cloud when you click it -->
+        <!-- the box that pops up when you click a cloud -->
         <form id="reading" class="xp-window" autocomplete="off">
             <div class="title-bar">
                 <span>What do you see?</span>
@@ -36,12 +36,12 @@
                     <input id="reading-input" type="text" maxlength="40" placeholder="a dog, a ship, my grandma...">
                     <button class="xp-button" type="submit">Tell the sky</button>
                 </div>
-                <!-- how many times this cloud has been read, and how many readings got pushed out -->
+                <!-- the "read X times" line -->
                 <p id="reading-info"></p>
             </div>
         </form>
 
-        <!-- intro window, goes away when you click "Look up" or the X -->
+        <!-- intro window -->
         <div id="intro">
             <div class="xp-window">
                 <div class="title-bar">
@@ -59,7 +59,7 @@
             </div>
         </div>
 
-        <!-- time zone window, opens from the start button -->
+        <!-- time zone window, opens from start -->
         <div id="timezone" class="xp-window">
             <div class="title-bar">
                 <span>Time Zone</span>
@@ -77,9 +77,9 @@
             </div>
         </div>
 
-        <!-- the taskbar along the bottom -->
+        <!-- taskbar -->
         <footer id="taskbar">
-            <!-- the green start button opens the time zone window (in timezone.js) -->
+            <!-- start button, opens the time zone window -->
             <button id="start-button" type="button">
                 <svg class="icon" viewBox="0 0 48 34" aria-hidden="true">
                     <circle cx="15" cy="21" r="10" />
@@ -90,14 +90,14 @@
                 start
             </button>
             <div id="task">Cloud Reading</div>
-            <!-- the tray: how many readings so far, and the time (in whatever time zone you picked) -->
+            <!-- tray: reading count + clock -->
             <div id="tray">
                 <span id="count"></span>
                 <span id="clock"></span>
             </div>
         </footer>
 
-        <!-- p5.js library (saved in the project so it works without wifi), then my scripts -->
+        <!-- p5 saved locally so it works without wifi, then my scripts -->
         <script src="{{ url_for('static', filename='js/p5.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/clouds.js') }}"></script>
         <script src="{{ url_for('static', filename='js/reading.js') }}"></script>
